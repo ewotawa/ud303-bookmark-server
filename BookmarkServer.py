@@ -43,6 +43,7 @@
 
 import http.server
 import requests
+import os # add OS for port listening 
 from urllib.parse import unquote, parse_qs
 
 memory = {}
@@ -162,6 +163,7 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             #    raise NotImplementedError("Step 5 isn't written yet!")
 
 if __name__ == '__main__':
-    server_address = ('', 8000)
+    port = int(os.environ.get('PORT', 8000)) # Use PORT if it's there
+    server_address = ('', port) # swap out 8000 for port variable
     httpd = http.server.HTTPServer(server_address, Shortener)
     httpd.serve_forever()
