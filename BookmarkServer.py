@@ -45,6 +45,8 @@ import http.server
 import requests
 import os # add OS for port listening 
 from urllib.parse import unquote, parse_qs
+import threading
+from socketserver import ThreadingMixIn
 
 memory = {}
 
@@ -162,8 +164,11 @@ class Shortener(http.server.BaseHTTPRequestHandler):
             #    Delete the following line.
             #    raise NotImplementedError("Step 5 isn't written yet!")
 
+class ThreadHTTPServer(ThreadingMixIn, http.server.HTTPServer):
+    "This is an HTTP Server that supports thread-based concurrency."
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8000)) # Use PORT if it's there
     server_address = ('', port) # swap out 8000 for port variable
-    httpd = http.server.HTTPServer(server_address, Shortener)
+    httpd = ThreadHTTPServer(server_address, Shortener) # update for ThreadHTTPServer class.
     httpd.serve_forever()
